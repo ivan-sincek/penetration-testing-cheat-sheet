@@ -191,19 +191,19 @@ Sometimes the output file might default to `/usr/lib/python3/dist-packages/theHa
 Extract hostnames from the results:
 
 ```bash
-grep -Po '(?<=\<hostname\>)[^\s]+?(?=\<\/hostname\>)' theHarvester_results.xml | sort -u -f | tee -a subdomains.txt
+grep -Po '(?<=\<hostname\>)[^\s]+?(?=\<\/hostname\>)' theHarvester_results.xml | sort -uf | tee -a subdomains.txt
 ```
 
 Extract emails from the results:
 
 ```bash
-grep -Po '(?<=\<email\>)[^\s]+?(?=\<\/email\>)' theHarvester_results.xml | sort -u -f | tee -a emails.txt
+grep -Po '(?<=\<email\>)[^\s]+?(?=\<\/email\>)' theHarvester_results.xml | sort -uf | tee -a emails.txt
 ```
 
 Extract people from the results:
 
 ```bash
-grep -Po '(?<=record\:\"people\"\,result\:\").+(?=\"\})' theHarvester_results.xml.html | sort -u -f | tee -a people.txt
+grep -Po '(?<=record\:\"people\"\,result\:\").+(?=\"\})' theHarvester_results.xml.html | sort -uf | tee -a people.txt
 ```
 
 ### FOCA (Fingerprinting Organizations with Collected Archives)
@@ -234,7 +234,7 @@ For more options run `metagoofil -h`.
 Extract authors from the downloaded files:
 
 ```bash
-for file in metagoofil_results/*; do exiftool -Author "${file}"; done | grep -Po '(?<=\:\ ).+' | sort -u -f | tee -a people.txt
+for file in metagoofil_results/*; do exiftool -Author "${file}"; done | grep -Po '(?<=\:\ ).+' | sort -uf | tee -a people.txt
 ```
 
 For more options run `man exiftool`.
@@ -361,19 +361,19 @@ Also, make sure you specify a full path to an output file; otherwise, it will de
 Extract hostnames from the standard/zone transfer/brute force results:
 
 ```bash
-jq -r '.[] | if (.type == "A" or .type == "AAAA" or .type == "CNAME" or .type == "PTR" or .type == "NS" or .type == "MX") then (.name, .target, .exchange) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -u -f | tee -a subdomains.txt
+jq -r '.[] | if (.type == "A" or .type == "AAAA" or .type == "CNAME" or .type == "PTR" or .type == "NS" or .type == "MX") then (.name, .target, .exchange) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -uf | tee -a subdomains.txt
 ```
 
 Extract IPs from the standard/zone transfer/brute force results:
 
 ```bash
-jq -r '.[] | if (.type == "A" or .type == "CNAME" or .type == "PTR" or .type == "NS" or .type == "MX") then (.address) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -u -f | tee -a ips.txt
+jq -r '.[] | if (.type == "A" or .type == "CNAME" or .type == "PTR" or .type == "NS" or .type == "MX") then (.address) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -uf | tee -a ips.txt
 ```
 
 Extract canonical names for a subdomain takeover vulnerability from the standard/zone transfer/brute force results:
 
 ```bash
-jq -r '.[] | if (.type == "CNAME") then (.target) else (empty) end' dnsrecon_std_results.json | sort -u -f | tee -a canonical_names.txt
+jq -r '.[] | if (.type == "CNAME") then (.target) else (empty) end' dnsrecon_std_results.json | sort -uf | tee -a canonical_names.txt
 ```
 
 Reverse DNS lookup:
@@ -385,7 +385,7 @@ dnsrecon --json /root/Desktop/dnsrecon_reverse_results.json -s -r 192.168.8.0/24
 Extract virtual hosts from the reverse DNS lookup results:
 
 ```bash
-jq -r '.[] | if (type == "array") then (.[].name) else (empty) end' dnsrecon_reverse_results.json | sort -u -f | tee -a subdomains.txt
+jq -r '.[] | if (type == "array") then (.[].name) else (empty) end' dnsrecon_reverse_results.json | sort -uf | tee -a subdomains.txt
 ```
 
 ### host
@@ -393,9 +393,9 @@ jq -r '.[] | if (type == "array") then (.[].name) else (empty) end' dnsrecon_rev
 Gather IPs for the given domains/subdomains (ask for `A` records):
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(host -t A $subdomain | grep -Po '(?<=has\ address\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -u -f | tee -a subdomains_to_ips.txt
+for subdomain in $(cat subdomains.txt); do res=$(host -t A $subdomain | grep -Po '(?<=has\ address\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_ips.txt
 
-grep -Po '(?<=\|\ )[^\s]+' subdomains_to_ips.txt | sort -u -f | tee -a ips.txt
+grep -Po '(?<=\|\ )[^\s]+' subdomains_to_ips.txt | sort -uf | tee -a ips.txt
 ```
 
 Check if domains/subdomains are alive with [httpx](#httpx).
@@ -403,17 +403,17 @@ Check if domains/subdomains are alive with [httpx](#httpx).
 Gather virtual hosts for the given IPs (ask for `PTR` records):
 
 ```bash
-for ip in $(cat ips.txt); do res=$(host -t PTR $ip | grep -Po '(?<=domain\ name\ pointer\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -u -f | tee -a ips_to_subdomains.txt
+for ip in $(cat ips.txt); do res=$(host -t PTR $ip | grep -Po '(?<=domain\ name\ pointer\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_subdomains.txt
 
-grep -Po '(?<=\|\ )[^\s]+' ips_to_subdomains.txt | sort -u -f | tee -a subdomains.txt
+grep -Po '(?<=\|\ )[^\s]+' ips_to_subdomains.txt | sort -uf | tee -a subdomains.txt
 ```
 
 Gather canonical names for the given domains/subdomains (ask for `CNAME` records):
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(host -t PTR $subdomain | grep -Po '(?<=is\ an\ alias\ for\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -u -f | tee -a subdomains_to_canonical_names.txt
+for subdomain in $(cat subdomains.txt); do res=$(host -t PTR $subdomain | grep -Po '(?<=is\ an\ alias\ for\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_canonical_names.txt
 
-grep -Po '(?<=\|\ )[^\s]+' subdomains_to_canonical_names.txt | sort -u -f | tee -a canonical_names.txt
+grep -Po '(?<=\|\ )[^\s]+' subdomains_to_canonical_names.txt | sort -uf | tee -a canonical_names.txt
 ```
 
 ### httpx
@@ -630,7 +630,7 @@ nmap -sn -oG nmap_ping_sweep_results.txt -iL cidr.txt
 Extract live hosts from the results:
 
 ```bash
-grep -Po '(?<=Host\:\ )[^\s]+' nmap_ping_sweep_results.txt | sort -u -f | tee -a ips.txt
+grep -Po '(?<=Host\:\ )[^\s]+' nmap_ping_sweep_results.txt | sort -uf | tee -a ips.txt
 ```
 
 TCP scan (all ports):
@@ -742,7 +742,7 @@ You can also use testssl.sh to exploit SSL/TLS vulnerabilities, get more info in
 Test a web server for Heartbleed vulnerability:
 
 ```bash
-for subdomain in $(cat live_subdomains.txt); do res=$(echo "Q" | openssl s_client -connect "${subdomain}:443" 2>&1 | grep 'server extension "heartbeat" (id=15)'); if [[ ! -z $res ]]; then echo "${subdomain}"; fi; done | sort -u -f | tee openssl_heartbleed_results.txt
+for subdomain in $(cat live_subdomains.txt); do res=$(echo "Q" | openssl s_client -connect "${subdomain}:443" 2>&1 | grep 'server extension "heartbeat" (id=15)'); if [[ ! -z $res ]]; then echo "${subdomain}"; fi; done | sort -uf | tee openssl_heartbleed_results.txt
 ```
 
 For more options run `man openssl` or `openssl help`.
@@ -782,9 +782,9 @@ Gather as much information as you can for a target domain(s), see how in [Reconn
 Gather organization's names for the given IPs (search for `WHOIS` records):
 
 ```bash
-for ip in $(cat ips.txt); do res=$(whois $ip | grep -Po '(?<=OrgName\:\ \ \ \ \ \ \ \ ).+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -u -f | tee -a ips_to_organization_names.txt
+for ip in $(cat ips.txt); do res=$(whois $ip | grep -Po '(?<=OrgName\:\ \ \ \ \ \ \ \ ).+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_organization_names.txt
 
-grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_organization_names.txt | sort -u -f | tee -a organization_names.txt
+grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_organization_names.txt | sort -uf | tee -a organization_names.txt
 ```
 
 Check if any of the IPs belong to [GitHub](https://github.com) organization.
@@ -794,11 +794,11 @@ Gather canonical names with [host](#host).
 Check if domains/subdomains are dead or not, look for `NXDOMAIN`, `SERVFAIL`, or `REFUSED` status codes:
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(dig $subdomain A +noall +comments | grep -Po '(?<=status\:\ )[^\s]+(?=\,)'); echo "${subdomain} | ${res}"; done | sort -u -f | tee -a subdomains_status.txt
+for subdomain in $(cat subdomains.txt); do res=$(dig $subdomain A +noall +comments | grep -Po '(?<=status\:\ )[^\s]+(?=\,)'); echo "${subdomain} | ${res}"; done | sort -uf | tee -a subdomains_status.txt
 
-grep -v 'NOERROR' subdomains.txt | grep -Po '[^\s]+(?=\ \|)' | sort -u -f | tee -a error_subdomains.txt
+grep -v 'NOERROR' subdomains.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a error_subdomains.txt
 
-grep 'NOERROR' subdomains.txt | grep -Po '[^\s]+(?=\ \|)' | sort -u -f | tee -a noerror_subdomains.txt
+grep 'NOERROR' subdomains.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a noerror_subdomains.txt
 ```
 
 You can double check if domains/subdomains are dead or not with [httpx](#httpx).
