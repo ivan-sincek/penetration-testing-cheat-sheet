@@ -480,7 +480,7 @@ Check the list of `/.well-known/` files [here](https://www.iana.org/assignments/
 
 Google Dorks will not show directories nor files that are disallowed in `robots.txt`, to check for such directories and files use [httpx](#httpx).
 
-Append `site:somedomain.com` to limit the scope to a specified domain or append `site:somedomain.com -www` to limit the scope only to subdomains.
+Append `site:somedomain.com` to limit the scope to a specified domain or `site:*.somedomain.com` to limit the scope only to subdomains.
 
 Simple Google Dorks examples:
 
