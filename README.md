@@ -174,6 +174,7 @@ Inspect the web console for possible errors. Inspect the source code for possibl
 * [isithacked.com](http://isithacked.com)
 * [threatcrowd.org](https://www.threatcrowd.org)
 * [haveibeenpwned.com](https://haveibeenpwned.com)
+* [intelx.io](https://intelx.io)
 * [search.wikileaks.org](https://search.wikileaks.org)
 * [archive.org](https://archive.org) (wayback machine)
 * [pgp.circl.lu](https://pgp.circl.lu) (OpenPGP key server)
@@ -262,15 +263,6 @@ assetfinder --subs-only somedomain.com | grep -v '*' | tee assetfinder_results.t
 
 For more options run `assetfinder -h`.
 
-assetfinder will enumerate subdomains using the following websites/tools:
-
-* facebook.com (requires an API key)
-* spyse.com (requires an API key)
-* dns.bufferover.run
-* crt.sh, sslmate\.com/certspotter
-* hackertarget.com, threatcrowd.org, virustotal.com (requires an API key)
-* archive.org (wayback machine)
-
 ### Sublist3r
 
 Enumerate subdomains using OSINT:
@@ -280,15 +272,6 @@ sublist3r -o sublist3r_results.txt -d somedomain.com
 ```
 
 For more options run `sublist3r -h`.
-
-Sublist3r will enumerate subdomains using the following websites/tools:
-
-* baidu.com, yahoo.com, google.com, bing.com
-* ask.fm
-* netcraft.com
-* dnsdumpster.com, PassiveDNS
-* SSL certificates
-* threatcrowd.org, virustotal.com
 
 ### Amass
 
