@@ -42,7 +42,8 @@ Future plans:
 * email injection,
 * insecure object deserialization,
 * create an ASP/ASP.NET web shell,
-* pre-shared key cracking.
+* pre-shared key cracking,
+* email spoofing.
 
 ## Table of Contents
 
