@@ -1533,9 +1533,9 @@ ncat -nv 192.168.8.5 9000 --ssl-cert crt.pem --ssl-key key.pem
 Check if it is possible to connect to a specified TCP port (e.g. port 22 or 23):
 
 ```bash
-for i in {0..255}; do ncat -nv 192.168.8.$i 9000 -w 2 -z 2>&1 | grep -Po '(?<=Connected\ to\ )[^\s]+(?=\.)'; done
+for i in {0..255}; do ncat -nv "192.168.8.${i}" 9000 -w 2 -z 2>&1 | grep -Po '(?<=Connected\ to\ )[^\s]+(?=\.)'; done
 
-for ip in $(cat ips.txt); do ncat -nv $ip 9000 -w 2 -z 2>&1 | grep -Po '(?<=Connected\ to\ )[^\s]+(?=\.)'; done
+for ip in $(cat ips.txt); do ncat -nv "${ip}" 9000 -w 2 -z 2>&1 | grep -Po '(?<=Connected\ to\ )[^\s]+(?=\.)'; done
 ```
 
 For more options run `man ncat` or `ncat -h`.
