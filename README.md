@@ -4,13 +4,13 @@ This is more of a checklist for myself. May contain useful tips and tricks.
 
 Everything was tested on Kali Linux v2021.2 (64-bit).
 
-For help with any of the tools write `<tool_name> -h | -hh | --help` or `man <tool_name>`.
+For help with any of the tools write `<tool_name> [-h | -hh | --help]` or `man <tool_name>`.
 
 Sometimes `-h` can be mistaken for a host or some other option. If that's the case, use `-hh` or `--help` instead, or read the manual with `man`.
 
-Some tools do similar tasks, but get slightly different results - run everything you can.
+Some tools do similar tasks, but get slightly different results. Run everything you can.
 
-Keep in mind when no protocol nor port number within a URL is specified, i.e. if you specify only `somesite.com`, some tools might default to HTTP protocol and port 80.
+Keep in mind when no protocol nor port number within a URL is specified, i.e. if you specify only `somesite.com`, some tools will default to HTTP protocol and port 80.
 
 If you didn't already, read the [OWASP Testing Guide v4.0](https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Testing_Guide_v4.pdf) and [OWASP Web Security Testing Guide v4.2](https://github.com/OWASP/wstg/releases/download/v4.2/wstg-v4.2.pdf).
 
@@ -24,15 +24,18 @@ Websites that you should use while writing the report:
 
 If you are interested, check my [WiFi penetration testing cheat sheet](https://github.com/ivan-sincek/wifi-penetration-testing-cheat-sheet).
 
-Also, check [this](https://www.infosecmatter.com/bug-bounty-tips) great website with a bunch of bug bounty tips. Credits to the author!
-
 Future plans:
 
-* Bash one-liner to transform `people.txt` into `emails.txt`,
+* more email gathering tools,
+* Bash one-liner to transform `people.txt` into `emails.txt`, and `emails.txt` into `usernames.txt`,
+* Subfinder and Findomain tools,
+* better one-liners for [httpx](#httpx),
 * more Google Dorks examples,
 * more directory fuzzing tips,
 * Gobuster tool,
 * more vulnerability scanning examples using NSE,
+* more WordPress tools,
+* subdomain takeover tools,
 * more Nuclei examples,
 * HTTP smuggling,
 * parameter pollution,
@@ -41,21 +44,9 @@ Future plans:
 * create an ASP/ASP.NET web shell,
 * pre-shared key cracking.
 
----
-
-Most of the tools can be installed like this:
-
-```
-apt-get update && apt-get install -y dnsrecon
-```
-
-Or, they can be downloaded and installed like this:
-
-```
-python3 setup.py install
-```
-
 ## Table of Contents
+
+**0. [Install Tools](#0-install-tools)**
 
 **1. [Reconnaissance](#1-reconnaissance)**
 
@@ -73,11 +64,12 @@ python3 setup.py install
 * [host](#host)
 * [httpx](#httpx)
 * [snallygaster](#snallygaster)
+* [getallurls](#getallurls)
 * [Google Dorks](#google-dorks)
+* [Bypassing 401 and 403](#bypassing-401-and-403)
 * [Directory Fuzzing Tips](#directory-fuzzing-tips)
 * [DirBuster](#dirbuster)
 * [Parsero](#parsero)
-* [getallurls](#getallurls)
 * [WhatWeb](#whatweb)
 * [Wordlists](#wordlists)
 
@@ -131,19 +123,39 @@ python3 setup.py install
 * [multi/handler](#multihandler)
 * [ngrok](#ngrok)
 
+## 0. Install Tools
+
+Most of the tools can be installed with Linux package manager:
+
+```bash
+apt-get update && apt-get install -y sometool
+```
+
+Some tools need to be downloaded and installed with Python:
+
+```fundamental
+python3 setup.py install
+```
+
+Some tools that are in the form of binaries or shell scripts can be moved to `/usr/bin/` for ease of use:
+
+```bash
+mv sometool.sh /usr/bin/sometool && chmod +x /usr/bin/sometool
+```
+
 ## 1. Reconnaissance
 
 Keep in mind that some websites are accessible only through older web browsers like Internet Explorer.
 
-Keep in mind that some websites may be missing the index page and may not redirect you to the home page at all. If that's the case, try to manually guess a full path to the home page or try directory fuzzing with [DirBuster](#dirbuster).
+Keep in mind that some websites may be missing the index page and may not redirect you to the home page at all. If that's the case, try to manually guess a full path to the home page, use [wayback machine](https://archive.org) ([getallurls](#getallurls)) to find old URLs, or try directory fuzzing with [DirBuster](#dirbuster).
 
-Search the Internet for default paths and files for a specific web application. Use the information gathered in combination with [Google Dorks](#google-dorks) or [httpx](#httpx) to find the same paths/files on different websites.
+Search the Internet for default paths and files for a specific web application. Use the information gathered in combination with [Google Dorks](#google-dorks) or [httpx](#httpx) to find the same paths/files on different websites. For not so common web applications, try to find and browse the source code for default paths/files. You can find the source code on [GitHub](https://github.com), [GitLab](https://about.gitlab.com), [searchcode](https://searchcode.com), etc.
 
-**Don't forget to access a web server over an IP address because you may find server's default welcome page and/or some other content.**
+Search the application's source code for API keys, SSH keys, credentials, tokens, hidden endpoints and domains, etc.
 
 Inspect the web console for possible errors. Inspect the source code for possible errors and comments.
 
-Search the source code of an application for API keys, SSH keys, credentials, tokens, hidden endpoints and domains, etc. Also, search for the source code on [GitHub](https://github.com), [GitLab](https://about.gitlab.com), [searchcode](https://searchcode.com), etc.
+**Don't forget to access a web server over an IP address because you may find server's default welcome page and/or some other content.**
 
 ### 1.1 Useful Websites
 
@@ -226,7 +238,7 @@ The GUI is very intuitive.
 Find and download specified or all files using Google Dorks:
 
 ```fundamental
-metagoofil -o metagoofil_results -e 30 -l 100 -n 100 -w -t 'pdf,doc,docx,,xls,xlsx,txt' -d somedomain.com
+metagoofil -o metagoofil_results -e 45 -l 100 -n 100 -w -t 'pdf,doc,docx,,xls,xlsx,txt' -d somedomain.com
 ```
 
 For more options run `metagoofil -h`.
@@ -249,18 +261,6 @@ assetfinder --subs-only somedomain.com | grep -v '*' | tee assetfinder_results.t
 
 For more options run `assetfinder -h`.
 
-assetfinder will enumerate subdomains using the following websites/tools:
-
-* crt.sh
-* sslmate.com/certspotter
-* hackertarget.com
-* threatcrowd.org
-* archive.org (wayback machine)
-* dns.bufferover.run
-* facebook.com (requires an API key)
-* virustotal.com (requires an API key)
-* spyse.com (requires an API key)
-
 ### Sublist3r
 
 Enumerate subdomains using OSINT:
@@ -270,17 +270,6 @@ sublist3r -o sublist3r_results.txt -d somedomain.com
 ```
 
 For more options run `sublist3r -h`.
-
-Sublist3r will enumerate subdomains using the following websites/tools:
-
-* baidu.com, yahoo.com, google.com, bing.com
-* ask.fm
-* netcraft.com
-* dnsdumpster.com
-* virustotal.com
-* threatcrowd.org
-* SSL certificates
-* PassiveDNS
 
 ### Amass
 
@@ -356,7 +345,7 @@ For more options run `man dnsrecon` or `dnsrecon -h`.
 
 DNSRecon can perform brute force attack with a user-defined wordlist, but make sure you specify a full path to the wordlist; otherwise, DNSRecon might not recognize it.
 
-Also, make sure you specify a full path to an output file; otherwise, it will default to `/usr/share/dnsrecon/` directory (i.e. to the root directory).
+Make sure you specify a full path to an output file; otherwise, it will default to `/usr/share/dnsrecon/` directory (i.e. to the root directory).
 
 Extract hostnames from the standard/zone transfer/brute force results:
 
@@ -393,7 +382,7 @@ jq -r '.[] | if (type == "array") then (.[].name) else (empty) end' dnsrecon_rev
 Gather IPs for the given domains/subdomains (ask for `A` records):
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(host -t A $subdomain | grep -Po '(?<=has\ address\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_ips.txt
+for subdomain in $(cat subdomains.txt); do res=$(host -t A "${subdomain}" | grep -Po '(?<=has\ address\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_ips.txt
 
 grep -Po '(?<=\|\ )[^\s]+' subdomains_to_ips.txt | sort -uf | tee -a ips.txt
 ```
@@ -403,7 +392,7 @@ Check if domains/subdomains are alive with [httpx](#httpx).
 Gather virtual hosts for the given IPs (ask for `PTR` records):
 
 ```bash
-for ip in $(cat ips.txt); do res=$(host -t PTR $ip | grep -Po '(?<=domain\ name\ pointer\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_subdomains.txt
+for ip in $(cat ips.txt); do res=$(host -t PTR "${ip}" | grep -Po '(?<=domain\ name\ pointer\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_subdomains.txt
 
 grep -Po '(?<=\|\ )[^\s]+' ips_to_subdomains.txt | sort -uf | tee -a subdomains.txt
 ```
@@ -411,18 +400,14 @@ grep -Po '(?<=\|\ )[^\s]+' ips_to_subdomains.txt | sort -uf | tee -a subdomains.
 Gather canonical names for the given domains/subdomains (ask for `CNAME` records):
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(host -t PTR $subdomain | grep -Po '(?<=is\ an\ alias\ for\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_canonical_names.txt
+for subdomain in $(cat subdomains.txt); do res=$(host -t PTR "${subdomain}" | grep -Po '(?<=is\ an\ alias\ for\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_canonical_names.txt
 
 grep -Po '(?<=\|\ )[^\s]+' subdomains_to_canonical_names.txt | sort -uf | tee -a canonical_names.txt
 ```
 
 ### httpx
 
-Download the latest version from [GitHub](https://github.com/projectdiscovery/httpx/releases), then, move the file and change the file permissions:
-
-```bash
-mv httpx /usr/bin/httpx && chmod +x /usr/bin/httpx
-```
+Download the latest version from [GitHub](https://github.com/projectdiscovery/httpx/releases). See how to [install](#0-install-tools) the tool.
 
 Check if domains/subdomains are alive or not:
 
@@ -430,31 +415,39 @@ Check if domains/subdomains are alive or not:
 httpx -o live_subdomains.txt -l subdomains.txt
 ```
 
-Check if a specified directory exists:
+Check if a specified path exists:
 
 ```bash
-httpx -status-code -content-length -o httpx_results.txt -l live_subdomains.txt -path /somedirectory/
+httpx -status-code -content-length -o httpx_results.txt -l live_subdomains.txt -path /somepath/
 ```
 
 For more options run `httpx -h`.
 
 ### snallygaster
 
-Download the latest version from [GitHub](https://github.com/hannob/snallygaster/releases), then, run install:
-
-```bash
-python3 setup.py install
-```
+Download the latest version from [GitHub](https://github.com/hannob/snallygaster/releases). See how to [install](#0-install-tools) the tool.
 
 Search a web server for sensitive files:
 
 ```bash
 snallygaster --nohttp --nowww somesite.com | tee snallygaster_results.txt
 
-for subdomain in $(cat live_subdomains.txt); do snallygaster --nohttp --nowww $subdomain; done | tee snallygaster_results.txt
+for subdomain in $(cat live_subdomains.txt); do snallygaster --nohttp --nowww "${subdomain}"; done | tee snallygaster_results.txt
 ```
 
 For more options run `snallygaster -h`.
+
+### getallurls
+
+Download the latest version from [GitHub](https://github.com/lc/gau/releases). See how to [install](#0-install-tools) the tool.
+
+Get URLs from [wayback machine](https://archive.org):
+
+```fundamental
+gau somedomain.com | tee gau_results.txt
+```
+
+For more options run `gau -h`.
 
 ### Google Dorks
 
@@ -464,9 +457,9 @@ Google Dorks databases and web tools:
 * [cxsecurity.com/dorks](https://cxsecurity.com/dorks)
 * [pentest-tools.com/information-gathering/google-hacking](https://pentest-tools.com/information-gathering/google-hacking)
 
-Check the list of `/.well-known/` files [here](https://en.wikipedia.org/wiki/List_of_/.well-known/_services_offered_by_webservers).
+Check the list of `/.well-known/` files [here](https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml).
 
-Google Dorks will not show directories nor files that are disallowed in `robots.txt`, for such directories and files use [httpx](#httpx).
+Google Dorks will not show directories nor files that are disallowed in `robots.txt`, to check for such directories and files use [httpx](#httpx).
 
 Append `site:somedomain.com` to limit the scope to a specified domain or append `site:somedomain.com -www` to limit the scope only to subdomains.
 
@@ -483,16 +476,44 @@ intitle:"index of /" intext:"parent directory"
 
 intitle:"index of /.git" intext:"parent directory"
 
+inurl:"/gitweb.cgi"
+
+intitle:"Dashboard [Jenkins]"
+
 (intext:"mysql database" AND intext:db_password) ext:txt
+
+intext:"-----BEGIN PGP PRIVATE KEY BLOCK-----" (ext:pem OR ext:key OR ext:txt)
 ```
+
+### Bypassing 401 and 403
+
+If you cannot access a web page e.g. on path `/admin`, try adding or modifying existing HTTP request headers.
+
+Try accessing a web page on some accessible path e.g. `/accessible` and then override the path to e.g. `/admin`:
+
+```fundamental
+X-Original-URL: /admin
+
+X-Override-URL: /admin
+
+X-Rewrite-URL: /admin
+```
+
+Try accessing a web page on the root path or e.g. `/admin` and then specify the full path in the HTTP request header:
+
+```fundamental
+Referer: https://somesite.com/admin
+```
+
+Search the Internet for more HTTP request headers.
 
 ### Directory Fuzzing Tips
 
 **Don't forget that GNU/Linux OS has a case sensitive file system, so make sure you use an appropriate wordlists.**
 
-If you don't get any results, try adding specific HTTP request headers (or modify the existing ones), then, try again to access or brute force the directories and file names.
+If you are not getting any results, try adding or modifying existing HTTP request headers.
 
-HTTP request headers to try:
+Try adding the localhost address or IPs from the scope (some might be whitelisted) in the following HTTP request headers:
 
 ```fundamental
 X-Forwarded-For: 127.0.0.1
@@ -505,6 +526,8 @@ X-Remote-Addr: 127.0.0.1
 
 X-Client-IP: 127.0.0.1
 ```
+
+Search the Internet for more HTTP request headers.
 
 ### DirBuster
 
@@ -539,28 +562,6 @@ parsero -sb -u somesite.com
 
 For more options run `parsero -h`.
 
-### getallurls
-
-Download the latest version from [GitHub](https://github.com/lc/gau/releases), then, move the file and change the file permissions:
-
-```bash
-mv gau /usr/bin/gau && chmod +x /usr/bin/gau
-```
-
-Get URLs:
-
-```fundamental
-gau somedomain.com | tee gau_results.txt
-```
-
-For more options run `gau -h`.
-
-getallurls will fetch URLs using the following websites/tools:
-
-* otx.alienvault.com
-* archive.org (wayback machine)
-* commoncrawl.org
-
 ### WhatWeb
 
 Identify a website:
@@ -585,7 +586,7 @@ Lists will be stored at `/usr/share/seclists/`.
 
 Or, manually download the collection from [GitHub](https://github.com/danielmiessler/SecLists/releases).
 
-Another popular wordlists:
+Another popular wordlists collections:
 
 * [assetnote/commonspeak2-wordlists](https://github.com/assetnote/commonspeak2-wordlists)
 * [weakpass.com/wordlist](https://weakpass.com/wordlist)
@@ -599,7 +600,7 @@ Keep in mind that on ports 80 (HTTP) and 443 (HTTPS) a web server can host diffe
 
 Keep in mind that on different URL paths a web server can host different web applications or some other services entirely, e.g. `somesite.com/app_one/` and `somesite.com/app_two/`.
 
-While scanning for vulnerabilities or running any other intensive scans, periodically check the web application/service in case it crashed so you can alert the client as soon as possible. Also, many times you will get temporarily blocked by a web application firewall (WAF) or some other security product and all your subsequent requests will be invalid.
+While scanning for vulnerabilities or running any other intensive scans, periodically check the web application/service in case it crashed so you can alert the client as soon as possible. Also, many times you might get temporarily blocked by a web application firewall (WAF) or some other security product and all your subsequent requests will be invalid.
 
 If a web application all of sudden stops responding, try to access the web application with your mobile data (e.g. use a different IP). It is possible that your current IP was temporarily blocked.
 
@@ -646,7 +647,7 @@ nmap -nv -sS -sV -sC -Pn -oN nmap_tcp_results.txt -p- -iL cidr.txt
 ```bash
 mkdir nmap_tcp_results
 
-for ip in $(cat ips.txt); do nmap -nv -sS -sV -sC -Pn -oN nmap_tcp_results/nmap_tcp_results_${ip//./_}.txt -p- $ip; done
+for ip in $(cat ips.txt); do nmap -nv -sS -sV -sC -Pn -oN nmap_tcp_results/nmap_tcp_results_${ip//./_}.txt -p- "${ip}"; done
 ```
 
 UDP scan (only important ports):
@@ -662,7 +663,7 @@ nmap -nv -sU -sV -sC -Pn -oN nmap_udp_results.txt -p 53,67,68,69,88,123,135,137,
 ```bash
 mkdir nmap_udp_results
 
-for ip in $(cat ips.txt); do nmap -nv -sU -sV -sC -Pn -oN nmap_udp_results/nmap_udp_results_${ip//./_}.txt -p 53,67,68,69,88,123,135,137,138,139,161,162,389,445,500,514,631,1900,4500 $ip; done
+for ip in $(cat ips.txt); do nmap -nv -sU -sV -sC -Pn -oN nmap_udp_results/nmap_udp_results_${ip//./_}.txt -p 53,67,68,69,88,123,135,137,138,139,161,162,389,445,500,514,631,1900,4500 "${subdomain}"; done
 ```
 
 | Option | Description |
@@ -721,21 +722,17 @@ For more options run `man wpscan` or `wpscan -h`.
 
 ### testssl.sh
 
-Download the latest version from [GitHub](https://github.com/drwetter/testssl.sh/releases) and change the file permissions:
-
-```bash
-mv testssl.sh /usr/bin/testssl && chmod +x /usr/bin/testssl
-```
+Download the latest version from [GitHub](https://github.com/drwetter/testssl.sh/releases). See how to [install](#0-install-tools) the tool.
 
 Test an SSL/TLS certificate (i.e. SSL/TLS ciphers, protocols, etc.):
 
 ```fundamental
-testssl.sh -oH testssl_results.html somesite.com
+testssl -oH testssl_results.html somesite.com
 ```
 
 For more options run `testssl -hh`.
 
-You can also use testssl.sh to exploit SSL/TLS vulnerabilities, get more info in the options.
+You can also use testssl.sh to exploit SSL/TLS vulnerabilities.
 
 ### OpenSSL
 
@@ -771,30 +768,31 @@ If you want to automate your code injection testing, check the [Wordlists](#word
 * [cxsecurity.com](https://cxsecurity.com/wlb)
 * [xssed.com](http://www.xssed.com)
 * [xss-payloads.com](http://www.xss-payloads.com/payloads-list.html?a#category=all) (advanced XSS PoCs)
+* [hakluke/weaponised-XSS-payloads](https://github.com/hakluke/weaponised-XSS-payloads)
 * [namecheap.com](https://www.namecheap.com) (buy domains for cheap)
 * [streaak/keyhacks](https://github.com/streaak/keyhacks) (validate API keys)
 * [swisskyrepo/PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)
-
+	
 ### Subdomain Takeover
 
-Gather as much information as you can for a target domain(s), see how in [Reconnaissance](#1-reconnaissance).
+Gather as much information as you can for a target domain, see how in [Reconnaissance](#1-reconnaissance).
 
 Gather organization's names for the given IPs (search for `WHOIS` records):
 
 ```bash
-for ip in $(cat ips.txt); do res=$(whois $ip | grep -Po '(?<=OrgName\:\ \ \ \ \ \ \ \ ).+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_organization_names.txt
+for ip in $(cat ips.txt); do res=$(whois "${ip}" | grep -Po '(?<=OrgName\:\ \ \ \ \ \ \ \ ).+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_organization_names.txt
 
 grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_organization_names.txt | sort -uf | tee -a organization_names.txt
 ```
 
-Check if any of the IPs belong to [GitHub](https://github.com) organization.
+Check if any IP belongs to [GitHub](https://github.com) organization.
 
 Gather canonical names with [host](#host).
 
 Check if domains/subdomains are dead or not, look for `NXDOMAIN`, `SERVFAIL`, or `REFUSED` status codes:
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(dig $subdomain A +noall +comments | grep -Po '(?<=status\:\ )[^\s]+(?=\,)'); echo "${subdomain} | ${res}"; done | sort -uf | tee -a subdomains_status.txt
+for subdomain in $(cat subdomains.txt); do res=$(dig "${subdomain}" A +noall +comments | grep -Po '(?<=status\:\ )[^\s]+(?=\,)'); echo "${subdomain} | ${res}"; done | sort -uf | tee -a subdomains_status.txt
 
 grep -v 'NOERROR' subdomains.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a error_subdomains.txt
 
@@ -807,11 +805,7 @@ Check if hosting providers for the found domains/subdomains are vulnerable to do
 
 ### Nuclei
 
-Download the latest version from [GitHub](https://github.com/projectdiscovery/nuclei/releases) and change the file permissions:
-
-```bash
-mv nuclei /usr/bin/nuclei && chmod +x /usr/bin/nuclei
-```
+Download the latest version from [GitHub](https://github.com/projectdiscovery/nuclei/releases). See how to [install](#0-install-tools) the tool.
 
 Download the latest [Nuclei templates](https://github.com/projectdiscovery/nuclei-templates/releases).
 
@@ -837,7 +831,9 @@ dotdotpwn -m http-url -f /etc/hosts -k localhost -u 'https://somesite.com/index.
 dotdotpwn -m http-url -f /etc/hosts -k localhost -u 'https://somesite.com/index.php?file=file://TRAVERSAL'
 ```
 
-You can also try to prepend a protocol such as `file://`, `gopher://`, `dict://`, `php://`, `jar://`, `tftp://`, etc. to the file path.
+Try to prepend a protocol such as `file://`, `gopher://`, `dict://`, `php://`, `jar://`, `tftp://`, etc. to the file path.
+
+Check some additional directory traversal tips at [swisskyrepo/PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Directory%20Traversal/README.md). Credits to the author!
 
 | Option | Description |
 | --- | --- |
@@ -872,7 +868,7 @@ somesite.com/redirect.asp?origin=somesite.com%0D%0ASet-Cookie:%20ASPSESSION=1234
 
 When encoded, `\r` refers to `%0D` and `\n` refers to `%0A`.
 
-Session fixation is only one of many techniques used in combination with HTTP response splitting. Search the Internet for more information.
+Session fixation is one out of many techniques used in combination with HTTP response splitting. Search the Internet for more information.
 
 ### Cross-Site Scripting (XSS)
 
@@ -1007,6 +1003,7 @@ Find out how to generate a `reverse shell payload` for Python and send it to a t
 
 * [swisskyrepo/PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)
 * [lolbas-project.github.io](https://lolbas-project.github.io)
+* [gtfobins.github.io](https://gtfobins.github.io)
 
 ### Generate a Reverse Shell Payload for Windows OS
 
@@ -1092,7 +1089,7 @@ Find out more about PowerShell reverse and bind TCP shells from my other [projec
 
 **Google a hash before trying to crack it because you might save yourself a lot of time and trouble.**
 
-Use [Google Dorks](#google-dorks) or [FOCA](#foca) to find files and within file's metadata domain usernames to brute force.
+Use [Google Dorks](#google-dorks), [Metagoofil](#metagoofil), or [FOCA](#foca) to find files and within file's metadata domain usernames to brute force.
 
 **Keep in mind that you might lockout people's accounts.**
 
@@ -1456,7 +1453,7 @@ curl -i somesite.com -T somefile.pdf -H 'Content-Type: application/pdf'
 curl -i -X FAKEMETHOD somesite.com
 ```
 
-Test a web server for an cross-site tracing (XST) attack:
+Test a web server for a cross-site tracing (XST) attack:
 
 ```fundamental
 curl -i -X TRACE -H 'XST: XST' somesite.com
@@ -1567,4 +1564,4 @@ exploit
 
 Use [ngrok](https://ngrok.com/download) to give your local web server a public address, but do not expose the web server for too long if it is not properly hardened due to security concerns.
 
-I also advise you not to transfer any sensitive data over it, just in case.
+I advise you not to transfer any sensitive data over it, just in case.
