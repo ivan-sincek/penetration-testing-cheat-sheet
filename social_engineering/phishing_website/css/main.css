@@ -1,0 +1,247 @@
+@charset "UTF-8";
+
+/* --------------------CUSTOMIZATION-------------------- */
+
+:root {
+	/* add more customizations to your liking */
+
+	/* new design */
+	--default-body-background-image:    none;
+	--default-body-background-position: none;
+	--default-body-background-repeat:   none;
+	--default-body-background-size:     none;
+	--default-body-background-color:    #F8F8F8;
+	--default-body-padding:             0.5em 1.5em;
+	--default-body-color:               #262626;
+	--default-body-font-family:         Arial, Helvetica, sans-serif;
+
+	--default-form-layout-background:  none;
+	--default-form-layout-padding:     none;
+	--default-form-layout-width:       none;
+	--default-form-layout-width-media: none;
+	--default-form-layout-color:       none;
+	--default-form-layout-border:      none;
+
+	--default-form-logo-width:       12em;
+	--default-form-logo-width-media: 11em;
+
+	--default-form-width:       18em;
+	--default-form-width-media: 14em;
+
+	--default-form-title:          2.6em;
+	--default-form-title-media:    2.6em;
+	--default-form-subtitle:       1.4em;
+	--default-form-subtitle-media: 1.4em;
+
+	--default-form-input-background-color: #FFF;
+	--default-form-input-color:            inherit;
+	--default-form-input-padding:          0.2em 0.7em;
+	--default-form-input-font-size:        1.3em;
+	--default-form-input-border-top:       0.07em solid #9D2A00;
+	--default-form-input-border-right:     0.07em solid #9D2A00;
+	--default-form-input-border-bottom:    0.07em solid #9D2A00;
+	--default-form-input-border-left:      0.07em solid #9D2A00;
+	--default-form-input-border-radius:    1em;
+
+	--default-form-submit-background-color:       #FF4500;
+	--default-form-submit-background-color-hover: #D83A00;
+	--default-form-submit-color:                  #F8F8F8;
+	--default-form-submit-border-top:             0.07em solid #9D2A00;
+	--default-form-submit-border-right:           0.07em solid #9D2A00;
+	--default-form-submit-border-bottom:          0.07em solid #9D2A00;
+	--default-form-submit-border-left:            0.07em solid #9D2A00;
+	--default-form-submit-border-radius:          1em;
+
+	/* old design */
+	/* --default-body-background-image:    url("../img/background_texture.jpg"); */
+	/* --default-body-background-position: left; */
+	/* --default-body-background-repeat:   repeat; */
+	/* --default-body-background-size:     contain; */
+	/* --default-body-background-color:    #262626; */
+	/* --default-body-padding:             0.5em 1.5em; */
+	/* --default-body-color:               #F8F8F8; */
+	/* --default-body-font-family:         Arial, Helvetica, sans-serif; */
+
+	/* --default-form-layout-background:  #DCDCDC; */
+	/* --default-form-layout-padding:     1.5em; */
+	/* --default-form-layout-width:       15em; */
+	/* --default-form-layout-width-media: 14em; */
+	/* --default-form-layout-color:       #000; */
+	/* --default-form-layout-border:      0.07em solid #000; */
+
+	/* --default-form-logo-width:       12em; */
+	/* --default-form-logo-width-media: 11em; */
+
+	/* --default-form-width:       15em; */
+	/* --default-form-width-media: 14em; */
+
+	/* --default-form-title:          2.6em; */
+	/* --default-form-title-media:    2.6em; */
+	/* --default-form-subtitle:       1.4em; */
+	/* --default-form-subtitle-media: 1.4em; */
+
+	/* --default-form-input-background-color: #FFF; */
+	/* --default-form-input-color:            inherit; */
+	/* --default-form-input-padding:          0.2em 0.4em; */
+	/* --default-form-input-font-size:        1.2em; */
+	/* --default-form-input-border-top:       0.07em solid #9D2A00; */
+	/* --default-form-input-border-right:     0.07em solid #9D2A00; */
+	/* --default-form-input-border-bottom:    0.07em solid #9D2A00; */
+	/* --default-form-input-border-left:      0.07em solid #9D2A00; */
+	/* --default-form-input-border-radius:    none; */
+
+	/* --default-form-submit-background-color:       #FF4500; */
+	/* --default-form-submit-background-color-hover: #D83A00; */
+	/* --default-form-submit-color:                  #F8F8F8; */
+	/* --default-form-submit-border-top:             0.07em solid #9D2A00; */
+	/* --default-form-submit-border-right:           0.07em solid #9D2A00; */
+	/* --default-form-submit-border-bottom:          0.07em solid #9D2A00; */
+	/* --default-form-submit-border-left:            0.07em solid #9D2A00; */
+	/* --default-form-submit-border-radius:          none; */
+}
+
+/* --------------------GLOBAL-------------------- */
+
+html {
+	height: 100%;
+}
+
+body {
+	background-color: var(--default-body-background-color);
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	height: inherit;
+	color: var(--default-body-color);
+	font-family: var(--default-body-font-family);
+	font-size: 1em;
+	font-weight: 400;
+	text-align: left;
+}
+
+.background-img {
+	background-image: var(--default-body-background-image);
+	background-position: var(--default-body-background-position);
+	background-repeat: var(--default-body-background-repeat);
+	background-size: var(--default-body-background-size);
+}
+
+/* --------------------FRONT FORM-------------------- */
+
+.front-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1 0 auto;
+	padding: var(--default-body-padding);
+}
+
+.front-form .layout {
+	background-color: var(--default-form-layout-background);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: var(--default-form-layout-padding);
+	width: var(--default-form-layout-width);
+	color: var(--default-form-layout-color);
+	border: var(--default-form-layout-border);
+}
+
+.front-form .logo {
+	text-align: center;
+}
+
+.front-form .logo img {
+	margin-bottom: 0.8em;
+	width: var(--default-form-logo-width);
+}
+
+.front-form header {
+	text-align: center;
+}
+
+.front-form header .title {
+	margin: 0;
+	font-size: var(--default-form-title);
+	font-weight: 400;
+}
+
+.front-form header .subtitle {
+	margin: 0.6em 0 0 0;
+	font-size: var(--default-form-subtitle);
+	font-weight: 400;
+}
+
+.front-form form {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1.4em;
+	width: var(--default-form-width);
+}
+
+.front-form form input {
+	background-color: var(--default-form-input-background-color);
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	margin: 0;
+	padding: var(--default-form-input-padding);
+	color: var(--default-form-input-color);
+	font-family: var(--default-body-font-family);
+	font-size: var(--default-form-input-font-size);
+	border-top: var(--default-form-input-border-top);
+	border-right: var(--default-form-input-border-right);
+	border-bottom: var(--default-form-input-border-bottom);
+	border-left: var(--default-form-input-border-left);
+	-webkit-border-radius: var(--default-form-input-border-radius);
+	-moz-border-radius: var(--default-form-input-border-radius);
+	border-radius: var(--default-form-input-border-radius);
+}
+
+.front-form form input:not(:last-child) {
+	margin-bottom: 0.5em;
+}
+
+.front-form form input[type="submit"] {
+	background-color: var(--default-form-submit-background-color);
+	color: var(--default-form-submit-color);
+	cursor: pointer;
+	border-top: var(--default-form-submit-border-top);
+	border-right: var(--default-form-submit-border-right);
+	border-bottom: var(--default-form-submit-border-bottom);
+	border-left: var(--default-form-submit-border-left);
+	-webkit-border-radius: var(--default-form-submit-border-radius);
+	-moz-border-radius: var(--default-form-submit-border-radius);
+	border-radius: var(--default-form-submit-border-radius);
+	transition: background-color 220ms linear;
+}
+
+.front-form form input[type="submit"]:hover {
+	background-color: var(--default-form-submit-background-color-hover);
+	transition: background-color 220ms linear;
+}
+
+/* --------------------MEDIA QUERIES-------------------- */
+
+@media screen and (max-width: 667px) {
+	.front-form .layout {
+		width: var(--default-form-layout-width-media);
+	}
+
+	.front-form .layout form {
+		width: var(--default-form-width-media);
+	}
+
+	.front-form header .title {
+		font-size: var(--default-form-title-media);
+	}
+
+	.front-form header .subtitle {
+		font-size: var(--default-form-subtitle-media);
+	}
+
+	.front-form .logo img {
+		width: var(--default-form-logo-width-media);
+	}
+}

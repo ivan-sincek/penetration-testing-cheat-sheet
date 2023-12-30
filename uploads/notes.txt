@@ -1,0 +1,1 @@
+exiftool -Comment="<?php echo 'pentest_php'; ?>" pentest.jpg -o image.php

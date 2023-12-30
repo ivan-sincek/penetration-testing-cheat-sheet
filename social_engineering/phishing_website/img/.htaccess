@@ -1,0 +1,5 @@
+Deny From All
+
+<FilesMatch "^.+\.(jpg|png|ico)$">
+	Allow From All
+</FilesMatch>
