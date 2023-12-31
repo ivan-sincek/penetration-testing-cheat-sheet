@@ -757,7 +757,7 @@ intext:-----BEGIN PGP PRIVATE KEY BLOCK----- (ext:pem OR ext:key OR ext:txt)
 Find and download files using Google Dorks:
 
 ```fundamental
-chad -sos no -d chad_results -tr 100 -q "ext:txt OR ext:pdf OR ext:doc OR ext:docx OR ext:xls OR ext:xlsx" -s *.somedomain.com -o chad_results.json
+chad -nsos -dir chad_results -tr 100 -q "ext:txt OR ext:pdf OR ext:doc OR ext:docx OR ext:xls OR ext:xlsx" -s *.somedomain.com -o chad_results.json
 ```
 
 Extract authors (and more) from the files:
@@ -771,7 +771,7 @@ exiftool -S chad_results | grep -Po '(?<=Author\:\ ).+' | sort -uf | tee -a peop
 Run a single Google Dork:
 
 ```fundamental
-chad -sos no -q 'intitle:"index of /" intext:"parent directory"' -s *.somedomain.com
+chad -nsos -q 'intitle:"index of /" intext:"parent directory"' -s *.somedomain.com
 ```
 
 For advanced use and automation, check the [project page](https://github.com/ivan-sincek/chad).
@@ -831,7 +831,7 @@ For more usage, check [github.com/trufflesecurity/trufflehog](https://github.com
 Crawl a website, and download and beautify \[minified\] JavaScript files:
 
 ```fundamental
-scrapy-scraper -u https://somesite.com/home -a random -d somedir -o scrapy_scraper_results.txt
+scrapy-scraper -u https://somesite.com/home -a random -dir somedir -o scrapy_scraper_results.txt
 ```
 
 More about my project at [ivan-sincek/scrapy-scraper](https://github.com/ivan-sincek/scrapy-scraper).
@@ -843,8 +843,6 @@ More about my project at [ivan-sincek/scrapy-scraper](https://github.com/ivan-si
 If you don't get any hits while brute forcing directories, try to brute force files by specifying file extensions.
 
 The following tools support recursive directory search and file search; also, they might take a long time to finish depending on the settings and wordlist used.
-
-Find out how to bypass 4xx HTTP response status codes from my other [project](https://github.com/ivan-sincek/forbidden).
 
 ### DirBuster
 
