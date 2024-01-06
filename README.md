@@ -177,7 +177,8 @@ go install -v github.com/user/sometool@latest
 To set up Golang, run `apt-get -y install golang`, add the following lines to `~/.zshrc`, and then run `source ~/.zshrc`:
 
 ```fundamental
-export GOROOT=/usr/lib/go
+# export GOROOT=/usr/lib/go # old
+export GOROOT=/root/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ```
@@ -416,6 +417,10 @@ sublist3r -o sublister_results.txt -d somedomain.com
 
 ### Subfinder
 
+```bash
+go install -v go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+```
+
 Gather subdomains using OSINT:
 
 ```fundamental
@@ -442,7 +447,7 @@ virustotal:
 Gather subdomains using OSINT:
 
 ```fundamental
-amass enum -passive -o amass_results.txt -trf resolvers.txt -d somedomain.com
+amass enum -o amass_results.txt -trf resolvers.txt -d somedomain.com
 ```
 
 Amass has built-in DNS resolvers.
