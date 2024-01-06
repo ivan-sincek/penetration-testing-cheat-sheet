@@ -329,7 +329,7 @@ Deprecated. Netcraft search does not work.
 Gather information:
 
 ```fundamental
-theHarvester -f theharvester_results.xml -b baidu,bevigil,bing,bingapi,certspotter,crtsh,dnsdumpster,duckduckgo,hackertarget,otx,threatminer,urlscan,yahoo -l 500 -d somedomain.com
+theHarvester -f theharvester_results.json -b baidu,bing,bingapi,certspotter,crtsh,dnsdumpster,duckduckgo,hackertarget,otx,threatminer,urlscan,yahoo -l 500 -d somedomain.com
 ```
 
 This tool is changing the search engines quite often, as such, some of them might not work as of this reading.
@@ -339,19 +339,25 @@ Sometimes the output file might default to `/usr/lib/python3/dist-packages/theHa
 Extract hostnames from the results:
 
 ```bash
-grep -Po '(?<=\<host\>)(?!\<(?:ip|hostname)\>)[^\s]+?(?=\<\/host\>)|(?<=\<hostname\>)[^\s]+?(?=\<\/hostname\>)' theharvester_results.xml | sort -uf | tee -a subdomains.txt
+js '.hosts[]' theharvester_results.json | sort -uf | tee -a subdomains.txt
 ```
 
 Extract IPs from the results:
 
 ```bash
-grep -Po '(?<=\<ip\>)[^\s]+?(?=\<\/ip\>)' theharvester_results.xml | sort -uf | tee -a ips.txt
+js '.ips[]' theharvester_results.json | sort -uf | tee -a ips.txt
 ```
 
 Extract emails from the results:
 
 ```bash
-grep -Po '(?<=\<email\>)[^\s]+?(?=\<\/email\>)' theharvester_results.xml | sort -uf | tee -a emails.txt
+js '.emails[]' theharvester_results.json | sort -uf | tee -a emails.txt
+```
+
+Extract emails from the results:
+
+```bash
+js '.asns[]' theharvester_results.json | sort -uf | tee -a asns.txt
 ```
 
 ### FOCA (Fingerprinting Organizations with Collected Archives)
