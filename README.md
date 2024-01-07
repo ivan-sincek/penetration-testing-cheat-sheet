@@ -177,8 +177,7 @@ go install -v github.com/user/sometool@latest
 To set up Golang, run `apt-get -y install golang`, add the following lines to `~/.zshrc`, and then run `source ~/.zshrc`:
 
 ```fundamental
-# export GOROOT=/usr/lib/go # old
-export GOROOT=/root/go
+export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ```
