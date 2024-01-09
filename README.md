@@ -920,9 +920,9 @@ Search a web server for sensitive files:
 ```bash
 snallygaster --nowww somesite.com | tee snallygaster_results.txt
 
-for subdomain in $(cat subdomains_live_long_http.txt); do snallygaster --nohttps --nowww "${subdomain}"; done | tee snallygaster_http_results.txt
+for subdomain in $(cat subdomains_live_short_http.txt); do snallygaster --nohttps --nowww "${subdomain}"; done | tee snallygaster_http_results.txt
 
-for subdomain in $(cat subdomains_live_long_https.txt); do snallygaster --nohttp --nowww "${subdomain}"; done | tee snallygaster_https_results.txt
+for subdomain in $(cat subdomains_live_short_https.txt); do snallygaster --nohttp --nowww "${subdomain}"; done | tee snallygaster_https_results.txt
 ```
 
 ### IIS Tilde Short name Scanning
