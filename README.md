@@ -1240,18 +1240,12 @@ subjack -v -o subjack_results.json -t 100 -timeout 3 -a -m -w subdomains.txt
 
 ### Nuclei
 
-Installation:
+Installation and updating:
 
 ```bash
-apt-get update && apt-get -y install nuclei
-```
+go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
-Download the latest [Nuclei templates](https://github.com/projectdiscovery/nuclei-templates/releases).
-
-To download and/or update Nuclei templates, run:
-
-```bash
-mkdir ~/nuclei-templates && nuclei -ut ~/nuclei-templates
+nuclei -up && nuclei -ut
 ```
 
 Vulnerability scan (all templates):
@@ -1265,7 +1259,7 @@ cat nuclei_results.txt | grep -Po '(?<=\]\ ).+' | sort -uf > nuclei_sorted_resul
 Only subdomain takeover:
 
 ```fundamental
-nuclei -c 500 -t ~/nuclei-templates/takeovers -o nuclei_takeover_results.txt -l subdomains_live.txt
+nuclei -c 500 -t takeovers -o nuclei_takeover_results.txt -l subdomains_live.txt
 ```
 
 ### WFUZZ
