@@ -238,7 +238,7 @@ apt-get update && apt-get -y install proxychains4 tor torbrowser-launcher
 
 Do the following changes to `/etc/proxychains4.conf` file:
 
-```
+```fundamental
 round_robin
 chain_len = 1
 proxy_dns
@@ -293,7 +293,7 @@ Inspect the web console for possible errors. Inspect the application's source co
 
 * [whois.domaintools.com](https://whois.domaintools.com)
 * [otx.alienvault.com](https://otx.alienvault.com) (domain lookup)
-* [reverseip.domaintools.com](https://reverseip.domaintools.com) (web-based reverse DNS lookup)
+* [reverseip.domaintools.com](https://reverseip.domaintools.com) (web-based reverse IP lookup)
 * [lookup.icann.org](https://lookup.icann.org)
 * [sitereport.netcraft.com](https://sitereport.netcraft.com)
 * [searchdns.netcraft.com](https://searchdns.netcraft.com) (web-based DNS lookup)
@@ -395,11 +395,11 @@ fofa: []
 Gather information using Shodan, Censys, and more:
 
 ```fundamental
-uncover -nc -json -o uncover_results.json -l 100 -e shodan,censys -q somedomain.com
+uncover -json -o uncover_results.json -l 100 -e shodan,censys -q somedomain.com
 
-jq '.host | select (. != "")' uncover_results.json | sort -uf | tee -a subdomains.txt
+jq -r 'select(.host != "").host' uncover_results.json | sort -uf | tee -a subdomains.txt
 
-jq '.ip | select (. != "")' uncover_results.json | sort -uf | tee -a ips.txt
+jq -r 'select(.ip != "").ip' uncover_results.json | sort -uf | tee -a ips.txt
 ```
 
 TO DO: Shodan and Censys Dorks.
@@ -422,6 +422,8 @@ sublist3r -o sublister_results.txt -d somedomain.com
 
 ### Subfinder
 
+Installation:
+
 ```bash
 go install -v go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 ```
@@ -429,7 +431,7 @@ go install -v go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfind
 Gather subdomains using OSINT:
 
 ```fundamental
-subfinder -silent -t 10 -timeout 3 -nW -o subfinder_results.txt -rL resolvers.txt -d somedomain.com
+subfinder -t 10 -timeout 3 -nW -o subfinder_results.txt -rL resolvers.txt -d somedomain.com
 ```
 
 Subfinder has built-in DNS resolvers.
@@ -497,7 +499,7 @@ Fetch the zone file from a domain name server:
 dig +noall +answer -t AXFR somedomain.com @ns.somedomain.com
 ```
 
-Reverse DNS lookup:
+Reverse IP lookup:
 
 ```fundamental
 dig +noall +answer -x 192.168.8.5
@@ -508,9 +510,9 @@ dig +noall +answer -x 192.168.8.5
 ```bash
 for subdomain in $(cat subdomains.txt); do res=$(dig "${subdomain}" -t A +noall +comments +timeout=3 | grep -Po '(?<=status\:\ )[^\s]+(?<!\,)'); echo "${subdomain} | ${res}"; done | sort -uf | tee -a subdomains_to_status.txt
 
-grep -v 'NOERROR' subdomains_to_status.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a subdomains_error.txt
+grep -v 'NOERROR' subdomains_to_status.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a subdomains_errors.txt
 
-grep 'NOERROR' subdomains_to_status.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a subdomains_error_none.txt
+grep 'NOERROR' subdomains_to_status.txt | grep -Po '[^\s]+(?=\ \|)' | sort -uf | tee -a subdomains_errors_none.txt
 ```
 
 ### Fierce
@@ -544,31 +546,31 @@ Make sure to specify a full path to the output file; otherwise, it will default 
 Extract hostnames from the standard/zone transfer/brute force results:
 
 ```bash
-jq -r '.[] | if (.type == "A" or .type == "AAAA" or .type == "CNAME" or .type == "MX" or .type == "NS" or .type == "PTR") then (.exchange, .name, .target) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -uf | tee -a subdomains.txt
+jq -r '.[] | select(.type | test("^A$|^CNAME$|^MX$|^NS$|^PTR$")) | .exchange // empty, .name // empty, .target // empty' dnsrecon_std_results.json | sort -uf | tee -a subdomains.txt
 ```
 
 Extract IPs from the standard/zone transfer/brute force results:
 
 ```bash
-jq -r '.[] | if (.type == "A" or .type == "AAAA" or .type == "CNAME" or .type == "MX" or .type == "NS" or .type == "PTR") then (.address) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -uf | tee -a ips.txt
+jq -r '.[] | select(.type | test("^A$|^CNAME$|^MX$|^NS$|^PTR$")).address' dnsrecon_std_results.json | sort -uf | tee -a ips.txt
 ```
 
 \[Subdomain Takeover\] Extract canonical names from the standard/zone transfer/brute force results:
 
 ```bash
-jq -r '.[] | if (.type == "CNAME") then (.target) else (empty) end | select(. != null)' dnsrecon_std_results.json | sort -uf | tee -a cnames.txt
+jq -r '.[] | select(.type | test("^CNAME$")).target' dnsrecon_std_results.json | sort -uf | tee -a cnames.txt
 ```
 
-Reverse DNS lookup:
+Reverse IP lookup:
 
 ```fundamental
 dnsrecon --json /root/Desktop/dnsrecon_reverse_results.json -s -r 192.168.8.0/24
 ```
 
-Extract virtual hosts from the reverse DNS lookup results:
+Extract virtual hosts from the reverse IP lookup results:
 
 ```bash
-jq -r '.[] | if (type == "array") then (.[].name) else (empty) end | select(. != null)' dnsrecon_reverse_results.json | sort -uf | tee -a subdomains.txt
+jq -r '.[] | if (type == "array") then (.[].name) else (empty) end' dnsrecon_ptr_results.json | sort -uf | tee -a subdomains.txt
 ```
 
 ### host
@@ -593,12 +595,12 @@ for ip in $(cat ips.txt); do res=$(host -t PTR "${ip}" | grep -Po '(?<=domain\ n
 grep -Po '(?<=\|\ )[^\s]+' ips_to_subdomains.txt | sort -uf | tee -a subdomains.txt
 ```
 
-\[Subdomain Takover\] Gather canonical names for the given domains/subdomains (ask for `CNAME` records):
+\[Subdomain Takover\] Gather canonical names for the given error domains/subdomains (ask for `CNAME` records):
 
 ```bash
-for subdomain in $(cat subdomains.txt); do res=$(host -t CNAMES "${subdomain}" | grep -Po '(?<=is\ an\ alias\ for\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_to_cnames.txt
+for subdomain in $(cat subdomains_errors.txt); do res=$(host -t CNAMES "${subdomain}" | grep -Po '(?<=is\ an\ alias\ for\ )[^\s]+(?<!\.)'); if [[ ! -z $res ]]; then echo "${subdomain} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a subdomains_errors_to_cnames.txt
 
-grep -Po '(?<=\|\ )[^\s]+' subdomains_to_cnames.txt | sort -uf | tee -a cnames.txt
+grep -Po '(?<=\|\ )[^\s]+' subdomains_errors_to_cnames.txt | sort -uf | tee -a subdomain_takeover.txt
 ```
 
 ### WHOIS, ASN, CIDR
@@ -614,12 +616,12 @@ grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_asns.txt | sort -uf | tee -a asns.txt
 Gather [CIDRs](https://www.arin.net/resources/guide/asn) from ASNs:
 
 ```bash
-for asn in $(cat asns.txt); do res=$(whois -h whois.radb.net -i origin "AS${asn}" | grep -Poi '(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}\/[0-9]+'); if [[ ! -z $res ]]; then echo "AS${asn} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a asns_to_cidrs.txt
+for asn in $(cat asns.txt); do res=$(whois -h whois.radb.net -i origin "AS${asn}" | grep -Poi '(?<=route\:)[\s]+\K.+'); if [[ ! -z $res ]]; then echo "AS${asn} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a asns_to_cidrs.txt
 
 grep -Po '(?<=\|\ )(?(?!\ \|).)+' asns_to_cidrs.txt | sort -uf | tee -a cidrs.txt
 ```
 
-\[Subdomain Takeover\] Gather organization names (and more) from IPs:
+\[Subdomain Takeover\] Gather organization names from IPs:
 
 ```bash
 for ip in $(cat ips.txt); do res=$(whois -h whois.arin.net "${ip}" | grep -Po '(?<=OrgName\:)[\s]+\K.+'); if [[ ! -z $res ]]; then echo "${ip} | ${res//$'\n'/ | }"; fi; done | sort -uf | tee -a ips_to_organization_names.txt
@@ -627,22 +629,26 @@ for ip in $(cat ips.txt); do res=$(whois -h whois.arin.net "${ip}" | grep -Po '(
 grep -Po '(?<=\|\ )(?(?!\ \|).)+' ips_to_organization_names.txt | sort -uf | tee -a organization_names.txt
 ```
 
-Check if any IP belongs to [GitHub](https://github.com) organization, more info about GitHub takeover in this [article](https://www.hackerone.com/application-security/guide-subdomain-takeovers).
+Check if any IP belongs to [GitHub](https://github.com) organization, more info about GitHub the takeover in this [article](https://www.hackerone.com/application-security/guide-subdomain-takeovers).
 
 ### ASNmap
 
-Download the latest version from [GitHub](https://github.com/projectdiscovery/asnmap/releases).
+Installation:
+
+```fundamental
+go install github.com/projectdiscovery/asnmap/cmd/asnmap@latest
+```
 
 Gather [CIDRs](https://www.arin.net/resources/guide/asn) from ASN:
 
 ```fundamental
-asnmap -silent -r resolvers.txt -a asn | tee -a asnmap_cidr_results.txt
+asnmap -r resolvers.txt -a asn | tee -a asnmap_cidr_results.txt
 ```
 
 Gather [CIDRs](https://www.arin.net/resources/guide/asn) from organization ID:
 
 ```fundamental
-asnmap -silent -r resolvers.txt -org id | tee -a asnmap_cidr_results.txt
+asnmap -r resolvers.txt -org id | tee -a asnmap_cidr_results.txt
 ```
 
 ### httpx
@@ -650,39 +656,47 @@ asnmap -silent -r resolvers.txt -org id | tee -a asnmap_cidr_results.txt
 Check if domains/subdomains are alive or not (map live hosts):
 
 ```bash
-httpx-toolkit -o subdomains_live.txt -l subdomains_error_none.txt
+httpx-toolkit -o httpx_results.txt -l subdomains_errors_none.txt
 
-httpx-toolkit -random-agent -json -o httpx_results.json -threads 100 -timeout 3 -l subdomains.txt -ports 80,443,8008,8080,8403,8443,9008,9080,9403,9443
+httpx-toolkit -random-agent -json -o httpx_results.json -threads 100 -timeout 3 -l subdomains_errors_none.txt -ports 80,443,8008,8080,8403,8443,9008,9080,9403,9443
 ```
 
 Filter domains/subdomains from the JSON results:
 
 ```bash
-jq -r '.url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_live_long.txt
+jq -r 'select(."status-code" | tostring | test("^2|^3|^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long.txt
+
+jq -r 'select(."status-code" | tostring | test("^2")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_2xx.txt
+
+jq -r 'select(."status-code" | tostring | test("^2|^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_2xx_4xx.txt
+
+jq -r 'select(."status-code" | tostring | test("^3")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_3xx.txt
+
+jq -r 'select(."status-code" | tostring | test("^401$")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_401.txt
+
+jq -r 'select(."status-code" | tostring | test("^403$")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_403.txt
+
+jq -r 'select(."status-code" | tostring | test("^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_4xx.txt
+
+jq -r 'select(."status-code" | tostring | test("^5")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_5xx.txt
 
 grep -Po 'http\:\/\/[^\s]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live_long_http.txt
 
 grep -Po 'https\:\/\/[^\s]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live_long_https.txt
 
+grep -Po '(?<=\:\/\/)[^\s]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live_short.txt
+
+grep -Po '(?<=http\:\/\/)[^\s]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live_short_http.txt
+
+grep -Po '(?<=https\:\/\/)[^\s]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live_short_https.txt
+
 grep -Po '(?<=\:\/\/)[^\s\:]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live.txt
-
-jq -r 'select(."status-code" >= 200 and ."status-code" < 300) | .url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_2xx.txt
-
-jq -r 'select(."status-code" >= 300 and ."status-code" < 400) | .url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_3xx.txt
-
-jq -r 'select(."status-code" < 300 or ."status-code" >= 400) | .url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_3xx_none.txt
-
-jq -r 'select(."status-code" >= 400 and ."status-code" < 500) | .url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_4xx.txt
-
-jq -r 'select(."status-code" == 401) | .url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_401.txt
-
-jq -r 'select(."status-code" == 403) | .url | select(. != null)' httpx_results.json | sort -uf | tee -a subdomains_403.txt
 ```
 
 Check if directory exists on a web server:
 
 ```bash
-httpx-toolkit -status-code -content-length -o httpx_results.txt -l subdomains_live.txt -path /.git
+httpx-toolkit -status-code -content-length -o httpx_results.txt -l subdomains_live_long.txt -path /.git
 ```
 
 ### gau
@@ -700,15 +714,15 @@ Filter URLs from the results:
 ```bash
 httpx-toolkit -random-agent -json -o httpx_gau_results.json -threads 100 -timeout 3 -r resolvers.txt -l gau_results.txt
 
-jq -r 'select(."status-code" >= 200 and ."status-code" < 300) | .url | select(. != null)' httpx_gau_results.json | sort -uf | tee gau_2xx_results.txt
+jq -r 'select(."status-code" | tostring | test("^2|^3|^4")).url' httpx_gau_results.json | sort -uf | tee gau_2xx_results.txt
 
-jq -r 'select(."status-code" >= 300 and ."status-code" < 400) | .url | select(. != null)' httpx_gau_results.json | sort -uf | tee gau_3xx_results.txt
+jq -r 'select(."status-code" | tostring | test("^3")).url' httpx_gau_results.json | sort -uf | tee gau_3xx_results.txt
 
-jq -r 'select(."status-code" >= 400) | .url | select(. != null)' httpx_gau_results.json | sort -uf | tee gau_4xx_results.txt
+jq -r 'select(."status-code" | tostring | test("^401$")).url' httpx_gau_results.json | sort -uf | tee gau_401_results.txt
 
-jq -r 'select(."status-code" == 401) | .url | select(. != null)' httpx_gau_results.json | sort -uf | tee gau_401_results.txt
+jq -r 'select(."status-code" | tostring | test("^403$")).url' httpx_gau_results.json | sort -uf | tee gau_403_results.txt
 
-jq -r 'select(."status-code" == 403) | .url | select(. != null)' httpx_gau_results.json | sort -uf | tee gau_403_results.txt
+jq -r 'select(."status-code" | tostring | test("^4")).url' httpx_gau_results.json | sort -uf | tee gau_4xx_results.txt
 ```
 
 ### urlhunter
@@ -867,7 +881,7 @@ All DirBuster's wordlists are located at `/usr/share/dirbuster/wordlists/` direc
 Brute force directories on a web server:
 
 ```fundamental
-cat subdomains_live_long.txt | feroxbuster --stdin --silent -k -n --auto-bail --random-agent -t 50 -T 3 --json -o feroxbuster_results.txt -s 200,301,302,401,403 -w directory-list-lowercase-2.3-medium.txt
+cat subdomains_live_long.txt | feroxbuster --stdin -k -n --auto-bail --random-agent -t 50 -T 3 --json -o feroxbuster_results.txt -s 200,301,302,401,403 -w directory-list-lowercase-2.3-medium.txt
 ```
 
 This tool seems to be faster than [DirBuster](#dirbuster).
@@ -875,17 +889,19 @@ This tool seems to be faster than [DirBuster](#dirbuster).
 Filter directories from the results:
 
 ```bash
-jq -r 'select(.status >= 200 and .status < 300) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_2xx.txt
+jq -r 'select(.status | tostring | test("^2")).url' feroxbuster_results.json | sort -uf | tee -a directories_2xx.txt
 
-jq -r 'select(.status >= 300 and .status < 400) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_3xx.txt
+jq -r 'select(.status | tostring | test("^2|^4")).url' feroxbuster_results.json | sort -uf | tee -a directories_2xx_4xx.txt
 
-jq -r 'select(.status < 300 and .status >= 400) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_3xx_none.txt
+jq -r 'select(.status | tostring | test("^3")).url' feroxbuster_results.json | sort -uf | tee -a directories_3xx.txt
 
-jq -r 'select(.status >= 400 and .status < 500) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_4xx.txt
+jq -r 'select(.status | tostring | test("^401$")).url' feroxbuster_results.json | sort -uf | tee -a directories_401.txt
 
-jq -r 'select(.status == 401) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_401.txt
+jq -r 'select(.status | tostring | test("^403$")).url' feroxbuster_results.json | sort -uf | tee -a directories_403.txt
 
-jq -r 'select(.status == 403) | .url | select(. != null)' feroxbuster_results.json | sort -uf | tee -a directories_403.txt
+jq -r 'select(.status | tostring | test("^4")).url' feroxbuster_results.json | sort -uf | tee -a directories_4xx.txt
+
+jq -r 'select(.status | tostring | test("^5")).url' feroxbuster_results.json | sort -uf | tee -a directories_5xx.txt
 ```
 
 | Option | Description |
@@ -1147,7 +1163,7 @@ for subdomain in $(cat subdomains_live_short_https.txt); do res=$(echo "Q" | ope
 Grab SSL/TLS certificate:
 
 ```fundamental
-keytool -printcert -rfc -sslserver ebay.com > keytool_results.txt
+keytool -printcert -rfc -sslserver somesite.com > keytool_results.txt
 
 openssl x509 -noout -text -in keytool_results.txt
 ```
@@ -1221,7 +1237,7 @@ go install -v github.com/lukasikic/subzy@latest
 Check for domains/subdomains takeover:
 
 ```fundamental
-subzy -concurrency 100 -timeout 3 -targets subdomains.txt | tee subzy_results.txt
+subzy -concurrency 100 -timeout 3 -targets subdomains_errors.txt | tee subzy_results.txt
 ```
 
 ### subjack
@@ -1235,7 +1251,7 @@ go install -v github.com/haccer/subjack@latest
 Check for domains/subdomains takeover:
 
 ```fundamental
-subjack -v -o subjack_results.json -t 100 -timeout 3 -a -m -w subdomains.txt
+subjack -v -o subjack_results.json -t 100 -timeout 3 -a -m -w subdomains_errors.txt
 ```
 
 ### Nuclei
@@ -1251,7 +1267,7 @@ nuclei -up && nuclei -ut
 Vulnerability scan (all templates):
 
 ```fundamental
-nuclei -c 500 -o nuclei_results.txt -l subdomains_live.txt
+nuclei -c 500 -o nuclei_results.txt -l subdomains_live_long_2xx_4xx.txt
 
 cat nuclei_results.txt | grep -Po '(?<=\]\ ).+' | sort -uf > nuclei_sorted_results.txt
 ```
