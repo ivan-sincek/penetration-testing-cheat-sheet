@@ -955,7 +955,7 @@ Search an IIS server for files and directories:
 java -jar iis_shortname_scanner.jar 2 30 https://somesite.com
 ```
 
-### Bypassing 401 and 403
+### Bypassing the 401 and 403
 
 Find out how to bypass 4xx HTTP response status codes from my other [project](https://github.com/ivan-sincek/forbidden).
 
