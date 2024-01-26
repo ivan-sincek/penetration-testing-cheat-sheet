@@ -2100,5 +2100,6 @@ I advise you not to transfer any sensitive data over it, just in case.
 
 Credits to the authors!
 
+* [book.hacktricks.xyz](https://book.hacktricks.xyz/welcome/readme)
 * [infosecmatter.com/bug-bounty-tips](https://www.infosecmatter.com/bug-bounty-tips)
 * [pentestbook.six2dez.com](https://pentestbook.six2dez.com)
