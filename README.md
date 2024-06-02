@@ -285,7 +285,7 @@ Search the Internet for default paths and files for a specific web application. 
 
 You can find the application's source code on [GitHub](https://github.com), [GitLab](https://about.gitlab.com), [searchcode](https://searchcode.com), etc.
 
-Search the application's source code for API keys, SSH keys, credentials, tokens, hidden hosts and domains, etc. with [TruffleHog](#trufflehog). Don't forget to check old GitHub commits for old but still active API keys, secret tokens, etc.
+Search the application's source code for API keys, SSH keys, credentials, tokens, hidden hosts and domains, etc., with [TruffleHog](#trufflehog). Don't forget to check old GitHub commits for old but still active API keys, secret tokens, etc.
 
 Inspect the web console for possible errors. Inspect the application's source code for possible comments.
 
@@ -1567,7 +1567,7 @@ dotdotpwn -q -m http -o unix -f /etc/passwd -k root -h somesite.com
 dotdotpwn -q -m http-url -o unix -f /etc/hosts -k localhost -u 'https://somesite.com/index.php?file=TRAVERSAL'
 ```
 
-Try to prepend a protocol such as `file://`, `gopher://`, `dict://`, `php://`, `jar://`, `ftp://`, `tftp://`, etc. to the file path; e.g `file://TRAVERSAL`.
+Try to prepend a protocol such as `file://`, `gopher://`, `dict://`, `php://`, `jar://`, `ftp://`, `tftp://`, etc., to the file path; e.g `file://TRAVERSAL`.
 
 Check some additional directory traversal tips at [swisskyrepo/PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Directory%20Traversal/README.md). Credits to the author!
 
@@ -1952,7 +1952,7 @@ Find out how to generate a good password spraying wordlist from my other [projec
 
 Such keywords can be a company name, abbreviations, words that describe your target's services, products, etc.
 
-After you generate the wordlist, use it with tools such as [Hydra](#hydra), [Burp Suite Intruder](https://portswigger.net/burp/documentation/desktop/tools/intruder/using), etc. to crack web login forms. P.S. Hydra can attack authentication mechanisms on all kinds of services/ports.
+After you generate the wordlist, use it with tools such as [Hydra](#hydra), [Burp Suite Intruder](https://portswigger.net/burp/documentation/desktop/tools/intruder/using), etc., to crack web login forms. P.S. Hydra can attack authentication mechanisms on all kinds of services/ports.
 
 If strong password policy is enforced, passwords usually start with one capitalized word followed by a few digits and one special character at the end (e.g., Password123!).
 
