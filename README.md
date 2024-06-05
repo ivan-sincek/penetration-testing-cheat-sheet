@@ -10,7 +10,7 @@ Sometimes `-h` can be mistaken for a host or some other option. If that's the ca
 
 Some tools do similar tasks, but get slightly different results. Run everything you can. Many tools complement each other!
 
-Keep in mind when no protocol nor port number in a URL is specified, i.e. if you specify only `somesite.com`, some tools will default to HTTP protocol and port 80.
+Keep in mind when no protocol nor port number in a URL is specified, i.e., if you specify only `somesite.com`, some tools will default to HTTP protocol and port 80.
 
 If you didn't already, read [OWASP Web Security Testing Guide](https://github.com/OWASP/wstg). Checklist can be downloaded [here](https://github.com/OWASP/wstg/tree/master/checklists).
 
@@ -544,7 +544,7 @@ dnsrecon -v --iw -f --lifetime 3 --threads 50 -t brt --json /root/Desktop/dnsrec
 
 DNSRecon can perform a brute force attack with a user-defined wordlist, but make sure to specify a full path to the wordlist; otherwise, DNSRecon might not recognize it.
 
-Make sure to specify a full path to the output file; otherwise, it will default to `/usr/share/dnsrecon/` directory (i.e. to the root directory).
+Make sure to specify a full path to the output file; otherwise, it will default to `/usr/share/dnsrecon/` directory (i.e., to the root directory).
 
 Extract hostnames from the standard/zone transfer/brute force results:
 
@@ -829,7 +829,7 @@ Navigate to `http://localhost:5000` with your preferred web browser.
 
 ### git-dumper
 
-Try to reconstruct a GitHub repository (i.e. get the source code) based on the commit history from a public `/.git` directory:
+Try to reconstruct a GitHub repository (i.e., get the source code) based on the commit history from a public `/.git` directory:
 
 ```fundamental
 git-dumper https://somesite.com/.git git_dumper_results
@@ -1044,7 +1044,7 @@ Keep in mind that on different URL paths a web server can host different web app
 
 While scanning for vulnerabilities or running any other intensive scans, periodically check the web application/service in case it crashed so you can alert your client as soon as possible. Also, many times you might get temporarily blocked by the web application firewall (WAF) or some other security product and all your subsequent requests will be invalid.
 
-If a web application all of sudden stops responding, try to access the web application with your mobile data (i.e. use a different IP). It is possible that your current IP was temporarily blocked.
+If a web application all of sudden stops responding, try to access the web application with your mobile data (i.e., use a different IP). It is possible that your current IP was temporarily blocked.
 
 Send an email message to a non-existent address at target's domain, it will often reveal useful internal network information through a nondelivery notification (NDN).
 
@@ -1171,7 +1171,7 @@ Installation:
 apt-get update && apt-get -y install testssl.sh
 ```
 
-Test an SSL/TLS certificate (i.e. SSL/TLS ciphers, protocols, etc.):
+Test an SSL/TLS certificate (i.e., SSL/TLS ciphers, protocols, etc.):
 
 ```fundamental
 testssl --openssl /usr/bin/openssl -oH testssl_results.html somesite.com
@@ -1204,13 +1204,13 @@ Use [uncover](#uncover) with certificate Shodan and Censys Dorks to find more po
 
 ## 3. Gaining Access/Exploiting
 
-Always try the null session login (i.e. no password login) or search the Internet for default credentials for a specific web application.
+Always try the null session login (i.e., no password login) or search the Internet for default credentials for a specific web application.
 
 Try to manipulate cookies or tokens to gain access or elevate privileges. On logout, always check if any of the cookies or tokens is still valid.
 
 Always inspect web browser's local storage, especially for single-page applications (SPAs).
 
-Try to transform, e.g., an HTTP POST request into an HTTP GET request (i.e. into a query string), and see if a server will accept it.
+Try to transform, e.g., an HTTP POST request into an HTTP GET request (i.e., into a query string), and see if a server will accept it.
 
 Turn off JavaScript in your web browser and check the web application behaviour again.
 
@@ -1357,7 +1357,7 @@ wfuzz -t 30 -f wfuzz_results.txt --hc 404,405 -X GET -u "https://somesite.com/so
 | -s | Specify time delay between requests (0 default) |
 | -u | Specify a URL for the request |
 | -w | Specify a wordlist file |
-| -X | Specify an HTTP method for the request, i.e. HEAD or FUZZ |
+| -X | Specify an HTTP method for the request, i.e., HEAD or FUZZ |
 | -b | Specify a cookie for the requests |
 | -d | Use post data |
 | -H | Use header |
@@ -1816,7 +1816,7 @@ hashcat --session=cracking --restore
 | -3 | User-defined charset ?3 |
 | -4 | User-defined charset ?4 |
 
-**When specifying a user-defined charset, escape `?` with another `?` (i.e. use `??` instead of `\?`).**
+**When specifying a user-defined charset, escape `?` with another `?` (i.e., use `??` instead of `\?`).**
 
 | Hash Type | Description |
 | --- | --- |
