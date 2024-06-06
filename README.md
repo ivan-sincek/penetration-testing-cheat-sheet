@@ -1236,13 +1236,13 @@ If you see any amounts or quantities, try to use [danielmiessler/SecLists/tree/m
 * [swisskyrepo/PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings)
 * [jwt.io](https://jwt.io)
 * [portswigger.net/web-security](https://portswigger.net/web-security)
+* [bigiamchallenge.com](https://bigiamchallenge.com) (nice AWS CTF)
 
 ### Collaborator Servers
 
 Exploit open redirect, blind cross-site scripting (XSS), DNS/HTTP interaction, etc.
 
 * [interactsh.com](https://app.interactsh.com)
-* [dnslog.cn](http://dnslog.cn)
 * [Burp Collaborator](https://portswigger.net/burp/documentation/collaborator)
 * [canarytokens.org](https://canarytokens.org/generate)
 * [webhook.site](https://webhook.site)
@@ -1261,6 +1261,7 @@ Popular cloud service providers:
 
 * [aws.amazon.com](https://aws.amazon.com)
 * [azure.microsoft.com](https://azure.microsoft.com)
+* [cloud.google.com](https://cloud.google.com)
 
 ### Subzy
 
