@@ -27,17 +27,6 @@ Websites that you should use while writing the report:
 * [nvd.nist.gov/ncp/repository](https://nvd.nist.gov/ncp/repository)
 * [attack.mitre.org](https://attack.mitre.org)
 
-Future plans:
-
-* more email gathering tools,
-* Bash one-liner to transform `people.txt` into `emails.txt`, and `emails.txt` into `usernames.txt`,
-* more WordPress tools,
-* HTTP smuggling,
-* parameter pollution,
-* insecure object deserialization,
-* pre-shared key cracking,
-* email spoofing.
-
 My other cheat sheets:
 
 * [WiFi Penetration Testing Cheat Sheet](https://github.com/ivan-sincek/wifi-penetration-testing-cheat-sheet)
@@ -79,12 +68,12 @@ My other cheat sheets:
 * [git-dumper](#git-dumper)
 * [TruffleHog](#trufflehog)
 * [Scrapy Scraper](#scrapy-scraper)
+* [katana](#katana)
 * [Directory Fuzzing](#directory-fuzzing)
 * [DirBuster](#dirbuster)
 * [feroxbuster](#feroxbuster)
 * [snallygaster](#snallygaster)
 * [IIS Tilde Short name Scanning](#iis-tilde-short-name-scanning)
-* [Bypassing the 401 and 403](#bypassing-the-401-and-403)
 * [WhatWeb](#whatweb)
 * [Parsero](#parsero)
 * [EyeWitness](#eyewitness)
@@ -94,20 +83,22 @@ My other cheat sheets:
 
 * [Useful Websites](#21-useful-websites)
 * [Nmap](#nmap)
-* [Nikto](#nikto)
-* [WPScan](#wpscan)
 * [testssl.sh](#testsslsh)
 * [OpenSSL](#openssl)
 * [keytool](#keytool)
 
-**3. [Gaining Access/Exploiting](#3-gaining-accessexploiting)**
+**3. [Vulnerability Assesment/Exploiting](#3-vulnerability-assesmentexploiting)**
 
 * [Useful Websites](#31-useful-websites)
 * [Collaborator Servers](#collaborator-servers)
 * [Subdomain Takeover](#subdomain-takeover)
 * [Subzy](#subzy)
 * [subjack](#subjack)
+* [Bypassing the 401 and 403](#bypassing-the-401-and-403)
+* [Nikto](#nikto)
+* [WPScan](#wpscan)
 * [Nuclei](#Nuclei)
+* [Arjun](#arjun)
 * [WFUZZ](#wfuzz)
 * [Insecure Direct Object Reference (IDOR)](#insecure-direct-object-reference-idor)
 * [HTTP Response Splitting](#http-response-splitting)
@@ -709,7 +700,7 @@ httpx-toolkit -status-code -content-length -o httpx_results.txt -l subdomains_li
 
 Gather URLs from the [wayback machine](https://archive.org):
 
-```fundamental
+```bash
 getallurls somedomain.com | tee gau_results.txt
 
 for subdomain in $(cat subdomains_live.txt); do getallurls "${subdomain}"; done | sort -uf | tee gau_results.txt
@@ -874,12 +865,40 @@ trufflehog filesystem somefile_1.txt somefile_2.txt somedir1 somedir2
 
 For more usage, check [trufflesecurity/trufflehog](https://github.com/trufflesecurity/trufflehog).
 
-# Scrapy Scraper
+### katana
+
+Installation:
+
+```fundamental
+go install github.com/projectdiscovery/katana/cmd/katana@latest
+```
+
+Crawl a website:
+
+```fundamental
+katana -timeout 3 -retry 1 -c 30 -o katana_results.txt -ps -jc -iqp -d 1 -u https://somesite.com/home
+
+katana -timeout 3 -retry 1 -c 30 -o katana_results.txt -ps -jc -iqp -d 1 -u subdomains_live_long_2xx.txt
+```
+
+Check a lot more options with `-h` or `--help`.
+
+### Scrapy Scraper
 
 Crawl a website, and download and beautify \[minified\] JavaScript files:
 
 ```fundamental
-scrapy-scraper -u https://somesite.com/home -a random -dir somedir -o scrapy_scraper_results.txt
+scrapy-scraper -cr 30 -a random -o scrapy_scraper_results.txt -p -r 1 -dir somedir -u https://somesite.com/home
+
+scrapy-scraper -cr 30 -a random -o scrapy_scraper_results.txt -p -r 1 -dir somedir -u subdomains_live_long_2xx.txt
+```
+
+In case you get no results while using Playwright's headless browser, try updating it:
+
+```fundamental
+pip3 install --upgrade playwright
+
+playwright install chromium
 ```
 
 More about my project at [ivan-sincek/scrapy-scraper](https://github.com/ivan-sincek/scrapy-scraper).
@@ -980,10 +999,6 @@ Search an IIS server for files and directories:
 ```fundamental
 java -jar iis_shortname_scanner.jar 2 30 https://somesite.com
 ```
-
-### Bypassing the 401 and 403
-
-Find out how to bypass 4xx HTTP response status codes from my other [project](https://github.com/ivan-sincek/forbidden).
 
 ### WhatWeb
 
@@ -1144,22 +1159,6 @@ You can find `rockyou.txt` and `subdomains-top1mil.txt` wordlists in [SecLists](
 
 I prefer to use [Nuclei](#nuclei) for vulnerability scanning.
 
-### Nikto
-
-Scan a web server:
-
-```fundamental
-nikto -output nikto_results.txt -h somesite.com -p 80
-```
-
-### WPScan
-
-Scan a WordPress website:
-
-```fundamental
-wpscan -o wpscan_results.txt --url somesite.com
-```
-
 ### testssl.sh
 
 Installation:
@@ -1199,7 +1198,7 @@ openssl x509 -noout -text -in keytool_results.txt
 
 Use [uncover](#uncover) with certificate Shodan and Censys Dorks to find more possibly in-scope hosts.
 
-## 3. Gaining Access/Exploiting
+## 3. Vulnerability Assesment/Exploiting
 
 Always try the null session login (i.e., no password login) or search the Internet for default credentials for a specific web application.
 
@@ -1285,6 +1284,26 @@ Check for domains/subdomains takeover:
 subjack -v -o subjack_results.json -t 100 -timeout 3 -a -m -w subdomains_errors.txt
 ```
 
+### Bypassing the 401 and 403
+
+Find out how to bypass 4xx HTTP response status codes from my other [project](https://github.com/ivan-sincek/forbidden).
+
+### Nikto
+
+Scan a web server:
+
+```fundamental
+nikto -output nikto_results.txt -h somesite.com -p 80
+```
+
+### WPScan
+
+Scan a WordPress website:
+
+```fundamental
+wpscan -o wpscan_results.txt --url somesite.com
+```
+
 ### Nuclei
 
 Installation and updating:
@@ -1309,12 +1328,22 @@ Only subdomain takeover:
 nuclei -c 500 -t takeovers -o nuclei_takeover_results.txt -l subdomains_live.txt
 ```
 
+### Arjun
+
+Discover request parameters:
+
+```fundamental
+arjun --stable -oT arjun_results.txt -oJ arjun_results.json -T 3 -t 5 --passive -m GET -u https://somesite.com
+
+arjun --stable -oT arjun_results.txt -oJ arjun_results.json -T 3 -t 5 --pasive -m GET -i subdomains_live_long_2xx.txt
+```
+
 ### WFUZZ
 
 Fuzz directories:
 
 ```fundamental
-wfuzz -t 30 -f wfuzz_results.txt --hc 404,405 -X GET -u "https://somesite.com/WFUZZ" -w directory-list-lowercase-2.3-medium.txt
+wfuzz -t 30 -f wfuzz_results.txt --hc 404,405 -X GET -u https://somesite.com/WFUZZ -w directory-list-lowercase-2.3-medium.txt
 ```
 
 Fuzz parameter values:
@@ -1874,7 +1903,7 @@ Dictionary attack:
 hashcat -m 16500 -a 3 --session=cracking --force --status -O eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.xuEv8qrfXu424LZk8bVgr9MQJUIrp1rHcPyZw_KSsds
 ```
 
-You can also check the JWT cracking tool from my other [project](https://github.com/ivan-sincek/jwt-bf).
+You can also check my JWT cracking tool [here](https://github.com/ivan-sincek/jwt-bf).
 
 ### Hydra
 
