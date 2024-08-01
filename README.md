@@ -1335,7 +1335,7 @@ Discover request parameters:
 ```fundamental
 arjun --stable -oT arjun_results.txt -oJ arjun_results.json -T 3 -t 5 --passive -m GET -u https://somesite.com
 
-arjun --stable -oT arjun_results.txt -oJ arjun_results.json -T 3 -t 5 --pasive -m GET -i subdomains_live_long_2xx.txt
+arjun --stable -oT arjun_results.txt -oJ arjun_results.json -T 3 -t 5 --passive -m GET -i subdomains_live_long_2xx.txt
 ```
 
 ### WFUZZ
