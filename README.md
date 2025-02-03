@@ -324,6 +324,8 @@ Inspect the web console for possible errors. Inspect the application's source co
 * [pgp.circl.lu](https://pgp.circl.lu) - OpenPGP key server
 * [shodan.io](https://www.shodan.io) - IoT search engine
 * [sherlockeye.io](https://sherlockeye.io) - account lookup
+* [whoisds.com](https://www.whoisds.com/newly-registered-domains) - newly registered domains
+* [radar.cloudflare.com](https://radar.cloudflare.com) - website lookup and more
 
 ### Dmitry
 
