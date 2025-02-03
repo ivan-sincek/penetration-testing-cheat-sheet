@@ -16,6 +16,8 @@ If you didn't already, read [OWASP Web Security Testing Guide](https://github.co
 
 Highly recommend reading [Common Security Issues in Financially-Orientated Web](https://soroush.me/downloadable/common-security-issues-in-financially-orientated-web-applications.pdf).
 
+Highly recommend doing [PortSwigger Web Security Academy](https://portswigger.net/web-security/all-labs), very underrated and super cheap.
+
 Websites that you should use while writing the report:
 
 * [cwe.mitre.org/data](https://cwe.mitre.org/data)
@@ -2098,7 +2100,7 @@ Here you can find a bunch of random stuff.
 * [jsonlint.com](https://jsonlint.com)
 * [base64decode.org](https://www.base64decode.org)
 * [urldecoder.org](https://www.urldecoder.org)
-* [bitly.com](https://bitly.com- URL shortener
+* [bitly.com](https://bitly.com) - URL shortener
 * [getcreditcardnumbers.com](https://www.getcreditcardnumbers.com) - dummy credit card info
 
 ### cURL
