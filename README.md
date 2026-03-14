@@ -695,21 +695,21 @@ httpx-toolkit -random-agent -json -o httpx_results.json -threads 100 -timeout 3 
 Filter out subdomains from the JSON results:
 
 ```bash
-jq -r 'select(."status-code" | tostring | test("^2|^3|^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long.txt
+jq -r 'select(."status_code" | tostring | test("^2|^3|^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long.txt
 
-jq -r 'select(."status-code" | tostring | test("^2")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_2xx.txt
+jq -r 'select(."status_code" | tostring | test("^2")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_2xx.txt
 
-jq -r 'select(."status-code" | tostring | test("^2|^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_2xx_4xx.txt
+jq -r 'select(."status_code" | tostring | test("^2|^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_2xx_4xx.txt
 
-jq -r 'select(."status-code" | tostring | test("^3")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_3xx.txt
+jq -r 'select(."status_code" | tostring | test("^3")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_3xx.txt
 
-jq -r 'select(."status-code" | tostring | test("^401$")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_401.txt
+jq -r 'select(."status_code" | tostring | test("^401$")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_401.txt
 
-jq -r 'select(."status-code" | tostring | test("^403$")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_403.txt
+jq -r 'select(."status_code" | tostring | test("^403$")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_403.txt
 
-jq -r 'select(."status-code" | tostring | test("^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_4xx.txt
+jq -r 'select(."status_code" | tostring | test("^4")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_4xx.txt
 
-jq -r 'select(."status-code" | tostring | test("^5")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_5xx.txt
+jq -r 'select(."status_code" | tostring | test("^5")).url' httpx_results.json | sort -uf | tee -a subdomains_live_long_5xx.txt
 
 grep -Po 'http\:\/\/[^\s]+' subdomains_live_long.txt | sort -uf | tee -a subdomains_live_long_http.txt
 
@@ -745,15 +745,15 @@ Filter out URLs from the results:
 ```bash
 httpx-toolkit -random-agent -json -o httpx_gau_results.json -threads 100 -timeout 3 -r resolvers.txt -l gau_results.txt
 
-jq -r 'select(."status-code" | tostring | test("^2")).url' httpx_gau_results.json | sort -uf | tee -a gau_2xx_results.txt
+jq -r 'select(."status_code" | tostring | test("^2")).url' httpx_gau_results.json | sort -uf | tee -a gau_2xx_results.txt
 
-jq -r 'select(."status-code" | tostring | test("^2|^4")).url' httpx_gau_results.json | sort -uf | tee -a gau_2xx_4xx_results.txt
+jq -r 'select(."status_code" | tostring | test("^2|^4")).url' httpx_gau_results.json | sort -uf | tee -a gau_2xx_4xx_results.txt
 
-jq -r 'select(."status-code" | tostring | test("^3")).url' httpx_gau_results.json | sort -uf | tee -a gau_3xx_results.txt
+jq -r 'select(."status_code" | tostring | test("^3")).url' httpx_gau_results.json | sort -uf | tee -a gau_3xx_results.txt
 
-jq -r 'select(."status-code" | tostring | test("^401$")).url' httpx_gau_results.json | sort -uf | tee -a gau_401_results.txt
+jq -r 'select(."status_code" | tostring | test("^401$")).url' httpx_gau_results.json | sort -uf | tee -a gau_401_results.txt
 
-jq -r 'select(."status-code" | tostring | test("^403$")).url' httpx_gau_results.json | sort -uf | tee -a gau_403_results.txt
+jq -r 'select(."status_code" | tostring | test("^403$")).url' httpx_gau_results.json | sort -uf | tee -a gau_403_results.txt
 ```
 
 ### urlhunter
