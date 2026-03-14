@@ -347,7 +347,7 @@ Deprecated. Netcraft search does not work.
 Gather information:
 
 ```fundamental
-theHarvester -f theharvester_results.json -b baidu,bing,bingapi,certspotter,crtsh,dnsdumpster,duckduckgo,hackertarget,otx,threatminer,urlscan,yahoo -l 500 -d somedomain.com
+theHarvester -f theharvester_results.json -b baidu,certspotter,chaos,commoncrawl,crtsh,duckduckgo,gitlab,hackertarget,hudsonrock,otx,rapiddns,robtex,subdomaincenter,subdomainfinderc99,thc,threatcrowd,urlscan,waybackarchive,yahoo -l 500 -d somedomain.com
 ```
 
 This tool is changing the search engines quite often, as such, some of them might not work as of this reading.
