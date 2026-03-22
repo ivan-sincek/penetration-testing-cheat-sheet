@@ -435,7 +435,7 @@ subfinder -t 10 -timeout 3 -nW -o subfinder_results.txt -rL resolvers.txt -d som
 
 **Subfinder has built-in DNS resolvers.**
 
-Set your API keys in `/root/.config/subfinder/config.yaml` file as following:
+Set your API keys in `/root/.config/subfinder/provider-config.yaml` file as following:
 
 ```fundamental
 shodan:
