@@ -832,7 +832,8 @@ exiftool -S chad_downloads | grep -Po '(?<=Author\:\ ).+' | sort -uf | tee -a pe
 Find directory listings using a Google Dork:
 
 ```fundamental
-chad -nsos chad_directory_listings_results.json -tr 200 -q 'intitle:"index of /" intext:"parent directory"' -s *.somedomain.com
+chad -nsos -p chad_directory_listings_results.json -tr 200 -q 'intitle:"index of /" intext:"parent directory"' -s *.somedomain.com
+
 ```
 
 More about my project at [ivan-sincek/chad](https://github.com/ivan-sincek/chad).
@@ -925,15 +926,19 @@ katana -timeout 3 -retry 1 -c 30 -o katana_results.txt -ps -jc -iqp -d 1 -u subd
 
 ### Scrapy Scraper
 
-Crawl a website, download, and beautify \[minified\] JavaScript files:
+Crawl a website, download and beautify JavaScript files, and extract links:
 
 ```fundamental
-scrapy-scraper -cr 30 -a random -o scrapy_scraper_results.txt -p -r 1 -dir somedir -u https://somesite.com/home
-
-scrapy-scraper -cr 30 -a random -o scrapy_scraper_results.txt -p -r 1 -dir somedir -u subdomains_live_long_2xx.txt
+scrapy-scraper -cr 30 -a random -o scrapy_scraper_results.txt -p -r 1 -d downloads -u https://somesite.com/home
 ```
 
-In case you get no results while using Playwright's headless browser, try updating it:
+Crawl websites, download and beautify JavaScript files, take a screenshot of only the start URLs, and extract links:
+
+```fundamental
+scrapy-scraper -cr 30 -a random -o scrapy_scraper_results.txt -p -r 1 -d downloads -ss screenshots -u subdomains_live_long_2xx.txt
+```
+
+In case you get an error using the Playwright's headless browser, try updating it:
 
 ```fundamental
 pip3 install --upgrade playwright
