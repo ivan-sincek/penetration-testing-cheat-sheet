@@ -1811,7 +1811,6 @@ You can find a bunch of useful wordlists in [SecLists](#wordlists).
 
 * [gchq.github.io/CyberChef](https://gchq.github.io/CyberChef)
 * [onlinehashcrack.com](https://www.onlinehashcrack.com)
-* [hashkiller.io/listmanager](https://hashkiller.io/listmanager) - has many other tools
 * [hashes.com/en/decrypt/hash](https://hashes.com/en/decrypt/hash) - has many other tools
 * [crackstation.net](https://crackstation.net)
 * [weakpass.com/wordlist](https://weakpass.com/wordlist) - lots of password dumps
