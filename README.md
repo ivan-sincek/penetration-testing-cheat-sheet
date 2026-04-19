@@ -191,9 +191,11 @@ To set up Golang, run:
 ```bash
 apt-get -y install golang
 
-echo "export GOROOT=/usr/lib/go" >> ~/.zshrc
-echo "export GOPATH=$HOME/go" >> ~/.zshrc
-echo "export PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.zshrc
+cat >> ~/.zshrc << 'EOF'
+export GOROOT=/usr/lib/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+EOF
 
 source ~/.zshrc
 ```
