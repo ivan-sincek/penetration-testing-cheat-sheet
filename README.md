@@ -2,7 +2,7 @@
 
 This is more of a checklist for myself. May contain useful tips and tricks.
 
-I have automated some of the tasks from this cheat sheet in my project at [ivan-sincek/auto-recon](https://github.com/ivan-sincek/auto-recon). Docker image will be available soon.
+I have automated some of the tasks from this cheat sheet in my project at [ivan-sincek/auto-recon](https://github.com/ivan-sincek/auto-recon).
 
 Everything was tested on Kali Linux v2024.2 (64-bit).
 
